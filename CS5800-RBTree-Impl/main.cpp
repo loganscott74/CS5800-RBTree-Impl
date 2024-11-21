@@ -81,10 +81,36 @@ public:
         
         cout << "| ";
         while (currNode && !currNode->isSentinal()) {
-            cout << currNode->key << " | ";
+            cout << currNode->key << "(" << currNode->p->key << ")" << " | ";
             currNode = successor(currNode);
         }
         cout << endl;
+    }
+    
+    void display() {
+        vector<Nodes*> toPrint;
+        toPrint.push_back(root);
+        
+        if (dynamic_cast<Sentinel*>(root)) {
+            cout << "Just a sentianl" << endl;
+            return;
+        }
+        
+        Nodes* lastPar = root->p;
+        while (!toPrint.empty()) {
+            Nodes* currNode = toPrint[0];
+            toPrint.erase(toPrint.begin());
+            if (lastPar != currNode->p) {
+                lastPar = currNode->p;
+                cout << endl;
+            }
+            cout << currNode->key << "(" << currNode->p->key << "," << (currNode->color == RED ? "Red" : "Black") << ")";
+            
+            if (!dynamic_cast<Sentinel*>(currNode->left))
+                toPrint.push_back(currNode->left);
+            if (!dynamic_cast<Sentinel*>(currNode->right))
+                toPrint.push_back(currNode->right);
+        }
     }
     
     /// Gets the root of the tree
@@ -366,6 +392,7 @@ int main(int argc, const char * argv[]) {
         cout << "Cannot find file, continuing without file input" << endl;
     }
     
+    /*
     // For each line in the file
     while (getline(inputFile, line)) {
         char cstr[line.length()];
@@ -380,6 +407,7 @@ int main(int argc, const char * argv[]) {
             word = strtok(nullptr, " ,");
         }
     }
+     */
     
     
     // Command prompts
@@ -470,8 +498,10 @@ int main(int argc, const char * argv[]) {
         } else if (command == "height") {
             cout << "Height: " << rbt.height() << endl;
             continue;
+        } else if (command == "display") {
+            rbt.display();
         } else {
-            cout << "Invalid command";
+            cout << "Invalid command" << endl;
             continue;
         }
         cout << endl << "Height: " << rbt.height() << endl;
